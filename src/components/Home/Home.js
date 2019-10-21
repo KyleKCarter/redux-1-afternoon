@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import RecipeCard from "./../RecipeCard/RecipeCard";
 import "./Home.css";
-import store from "../../store";
+import store, {CLEAR_FIELDS} from "../../store";
 
 class Home extends Component {
   constructor(props) {
@@ -11,6 +11,19 @@ class Home extends Component {
     this.state = {
       recipes: reduxState.recipes
     };
+  }
+
+  componentDidMount() {
+    store.subscribe(() => {
+      const reduxState = store.getState();
+      this.setState({ recipes: reduxState.recipes})
+    })
+  }
+
+  clearFields = () => {
+    store.dispatch({
+      type: CLEAR_FIELDS,
+    });
   }
 
   render() {
@@ -24,13 +37,15 @@ class Home extends Component {
           authorLast={recipe.authorLast}
           ingredients={recipe.ingredients}
           instructions={recipe.instructions}
+          recipes={this.state.recipes}
+          index={i}
         />
       );
     });
     return (
       <div className="Home">
         <Link to="/add/name">
-          <button>Create New Recipe</button>
+          <button onClick={this.clearFields}>Create New Recipe</button>
         </Link>
         <div className="card_container">{recipes}</div>
       </div>

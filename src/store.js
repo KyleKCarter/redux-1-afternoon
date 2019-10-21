@@ -1,4 +1,4 @@
-import {createStore} from "redux";
+import { createStore } from "redux";
 
 const initialState = {
     name: '',
@@ -17,9 +17,11 @@ export const UPDATE_LAST = 'UPDATE_LAST';
 export const ADD_INGREDIENT = 'ADD_INGREDIENT';
 export const ADD_INSTRUCTION = 'ADD_INSTRUCTION';
 export const ADD_RECIPE = 'ADD_RECIPE';
+export const CLEAR_FIELDS = 'CLEAR_FIELDS';
+export const DELETE_RECIPE = 'DELETE_RECIPE';
 
-function reducer(state = initialState, action){
-    const {type, payload} = action;
+function reducer(state = initialState, action) {
+    const { type, payload } = action;
     switch (type) {
         case UPDATE_NAME:
             return {
@@ -54,16 +56,34 @@ function reducer(state = initialState, action){
                 instructions: newInstructions
             };
         case ADD_RECIPE:
-            const { name, category, authorFirst, authorLast, ingredients, instructions} = state;
-            const recipe = { name, category, authorFirst, authorLast, ingredients, instructions};
+            const { name, category, authorFirst, authorLast, ingredients, instructions } = state;
+            const recipe = { name, category, authorFirst, authorLast, ingredients, instructions };
             const newRecipes = [...state.recipes, recipe];
             return {
                 ...state,
                 recipes: newRecipes
             }
-        default: 
+        case CLEAR_FIELDS:
+            return {
+                ...state,
+                name: '',
+                category: '',
+                authorFirst: '',
+                authorLast: '',
+                ingredients: [],
+                instructions: []
+            }
+        case DELETE_RECIPE:
+            let recipeCopy = state.recipes.slice();
+            recipeCopy.splice(payload, 1);
+            return {
+                ...state,
+                recipes: recipeCopy
+            }
+        default:
             return state;
     }
 }
+
 
 export default createStore(reducer);
